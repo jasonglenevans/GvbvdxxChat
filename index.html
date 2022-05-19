@@ -28,14 +28,33 @@
 		position:fixed;
 		top:0;
 		right:0;
-		width:400px;
-		height:200px;
 		image-rendering:pixelated;
+		background: grey;
+		border-style: solid;
+		border-width: #868e96;
+		border-color: #4c6ef5;
+	}
+	.fullscreenView {
+		width:100%;
+		height:100%;
+	}
+	.defaultView {
+		width:400px;
+		height:290px;
 	}
 	</style>
 	    <center>
 		    <h2>Chat By Gvbvdxx</h2>
-			<div id="screenCaptureDiv" hidden><img id="videoRecord" width=400 height=200></div>
+			<div id="screenCaptureDiv" style='width:400px;height:240px;' hidden><button style="height:20px;"
+			onclick="
+			if (document.getElementById('screenCaptureDiv').getAttribute('style') == 'width:100%;height:100%;') {
+				document.getElementById('screenCaptureDiv').setAttribute('style','width:400px;height:290px;');
+			} else {
+				document.getElementById('screenCaptureDiv').setAttribute('style','width:100%;height:100%;');
+			}
+			
+			"
+			class="roundborder">view fullscreen</button><img id="videoRecord" style="width:100%;height:90%;" width=400 height=300></div>
 			<div id="usernameSetup">
 			    <input type="text" id="username" oninput="typeSound();" class="roundborder inputText1" value="">
 				<br>
@@ -586,6 +605,7 @@ websocket.onmessage = function(event) {
 			console.log("ban extucuted:" + "ban ip:"+data.ip + " current ip:" + data.ip);
 		} else {
 			if (data.command == "updateCapture") {
+				
 				document.getElementById("videoRecord").src = data.src;
 				document.getElementById("screenCaptureDiv").hidden = false;
 				updateDiv();
@@ -736,8 +756,11 @@ window.chat = {
 var video = document.createElement("video");
 var cvs = document.createElement("canvas");
 video.volume = 0; //mute it so we dont hear it
-cvs.width = 400;
-cvs.height = 300;
+//cvs.width = 400;
+//cvs.height = 300;
+//devide by 1.4 to lower the image data.
+cvs.width = 640/1.4;
+cvs.height = 480/1.4;
 async function startCapture(displayMediaOptions) {
   let captureStream = null;
 
@@ -777,16 +800,17 @@ startCapture({
 		video.play();
 		var cxt = cvs.getContext('2d');
 		streamTimer = setInterval(() => {
-		try{
-			cxt.drawImage(video, 0, 0, cvs.width, cvs.height);
-			//document.getElementById("videoRecord").src = cvs.toDataURL();
-		}catch(e){console.error(e);}
+			try{
+				cxt.drawImage(video, 0, 0, cvs.width, cvs.height);
+				//document.getElementById("videoRecord").src = cvs.toDataURL();
+			}catch(e){console.error(e);}
+			var chunks = [];
 			websocket.send(JSON.stringify({
 				command:"updateCapture",
 				src:cvs.toDataURL(),
 				room:server
 			}));
-		},150);
+		},170);
 		button.innerHTML = "stop screen share";
 		button.onclick = function () {
 			window.stopScreenShare();
