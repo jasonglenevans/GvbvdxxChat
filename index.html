@@ -565,11 +565,18 @@ setInterval(() => {
 	}
 	framestime = 0;
 },1000)
+var screenShareTI = false;
 websocket.onmessage = function(event) {
 	var data = JSON.parse(event.data);
 	if (data.room == server) {
 		if (data.command == "stopShare") {
-			stopScreenShare();
+			if (screenShareTI) {
+				console.log("ignored stopped sharing");
+				screenShareTI = false;
+			} else {
+				console.log("stopped sharing");
+				window.stopScreenShare();
+			}
 		} else {
 		if (data.command == "ban") {
 			if (data.ip == window.currentIP) {
@@ -729,7 +736,7 @@ window.chat = {
 var video = document.createElement("video");
 var cvs = document.createElement("canvas");
 video.volume = 0; //mute it so we dont hear it
-cvs.width = 300;
+cvs.width = 400;
 cvs.height = 300;
 async function startCapture(displayMediaOptions) {
   let captureStream = null;
@@ -737,39 +744,56 @@ async function startCapture(displayMediaOptions) {
   try {
     captureStream = await navigator.mediaDevices.getDisplayMedia(displayMediaOptions);
   } catch(err) {
-    console.error("Error: " + err);
+    throw Error(err);
   }
   return captureStream;
 }
 var streamTimer = null;
 var button = document.getElementById("shareScreen");
+var streamForCapture = null;
 var previousButtonText = button.innerHTML;
 function startCap() {
 video.play();
-websocket.send(JSON.stringify({
-	command:"stopShare",
-	room:server
-}));
-startCapture().then(function(capture) {
-	video.srcObject=capture;
-	video.play();
-	var cxt = cvs.getContext('2d');
-	streamTimer = setInterval(() => {
-	try{
-		cxt.drawImage(video, 0, 0, cvs.width, cvs.height);
-		//document.getElementById("videoRecord").src = cvs.toDataURL();
-	}catch(e){console.error(e);}
-		websocket.send(JSON.stringify({
-			command:"updateCapture",
-			src:cvs.toDataURL(),
-			room:server
-		}));
-	},150);
-	button.innerHTML = "stop screen share";
-	button.onclick = function () {
-		window.stopScreenShare();
-	};
+try{
+startCapture({
+  video: {
+    cursor: "always"
+  },
+  audio: {
+    echoCancellation: true,
+    noiseSuppression: true,
+    sampleRate: 44100
+  }
+}).then(function(capture) {
+	streamForCapture = capture;
+	screenShareTI = true;
+	window.mediaRecorder = new MediaRecorder(streamForCapture);
+	websocket.send(JSON.stringify({
+		command:"stopShare",
+		room:server
+	}));
+	setTimeout(() => {
+		video.srcObject=capture;
+		video.play();
+		var cxt = cvs.getContext('2d');
+		streamTimer = setInterval(() => {
+		try{
+			cxt.drawImage(video, 0, 0, cvs.width, cvs.height);
+			//document.getElementById("videoRecord").src = cvs.toDataURL();
+		}catch(e){console.error(e);}
+			websocket.send(JSON.stringify({
+				command:"updateCapture",
+				src:cvs.toDataURL(),
+				room:server
+			}));
+		},150);
+		button.innerHTML = "stop screen share";
+		button.onclick = function () {
+			window.stopScreenShare();
+		};
+	},100);
 });
+}catch(e){}
 };
 window.stopScreenShare = function stopScreenShare() {
 	clearInterval(streamTimer);
