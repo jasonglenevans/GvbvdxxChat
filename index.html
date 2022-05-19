@@ -27,14 +27,15 @@
 	#screenCaptureDiv {
 		position:fixed;
 		top:0;
-		left:0;
-		width:100%;
+		right:0;
+		width:400px;
 		height:200px;
+		image-rendering:pixelated;
 	}
 	</style>
 	    <center>
 		    <h2>Chat By Gvbvdxx</h2>
-			<div id="screenCaptureDiv" hidden><center><img id="videoRecord" width=400 height=200></center></div>
+			<div id="screenCaptureDiv" hidden><img id="videoRecord" width=400 height=200></div>
 			<div id="usernameSetup">
 			    <input type="text" id="username" oninput="typeSound();" class="roundborder inputText1" value="">
 				<br>
@@ -723,8 +724,8 @@ window.chat = {
 var video = document.createElement("video");
 var cvs = document.createElement("canvas");
 video.volume = 0; //mute it so we dont hear it
-cvs.width = 300;
-cvs.height = 300;
+cvs.width = 50;
+cvs.height = 50;
 async function startCapture(displayMediaOptions) {
   let captureStream = null;
 
@@ -743,19 +744,15 @@ startCapture().then(function(capture) {
 	var cxt = cvs.getContext('2d');
 	setInterval(() => {
 	try{
-		video.width = 300;
-		video.height = 300;
 		cxt.drawImage(video, 0, 0, cvs.width, cvs.height);
 		//document.getElementById("videoRecord").src = cvs.toDataURL();
-	}catch(e){
-	//console.error(e);
-	}
+	}catch(e){console.error(e);}
 		websocket.send(JSON.stringify({
 			command:"updateCapture",
 			src:cvs.toDataURL(),
 			room:server
 		}));
-	},10)
+	},1)
 });
 }
 ///////////////
