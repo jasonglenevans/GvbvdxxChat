@@ -98,7 +98,7 @@
 					window.notifyEnabled = true;
 					this.style.backgroundColor = '#e0e0e0';
 				}">notify me</button>
-				<button class="roundborder" style="background-color:#5e5e5e;" onclick="startCap();">share screen</button>
+				<button class="roundborder" id="shareScreen" onclick="startCap();">share screen</button>
 				<br>
 			</div>
 			<div id="emojiSelect" style="display:none;">
@@ -568,6 +568,9 @@ setInterval(() => {
 websocket.onmessage = function(event) {
 	var data = JSON.parse(event.data);
 	if (data.room == server) {
+		if (data.command == "stopShare") {
+			stopScreenShare();
+		} else {
 		if (data.command == "ban") {
 			if (data.ip == window.currentIP) {
 				localStorage.setItem("banded","yes");
@@ -606,6 +609,7 @@ websocket.onmessage = function(event) {
 				}
 			}
 			}
+		}
 		}
 	}
 	websocket.onclose = function(event) {
@@ -720,12 +724,13 @@ window.chat = {
 	},
 	listeners: {onmessage:[],onsend:[]}
 }
+
 ////////////////////////////////////
 var video = document.createElement("video");
 var cvs = document.createElement("canvas");
 video.volume = 0; //mute it so we dont hear it
-cvs.width = 50;
-cvs.height = 50;
+cvs.width = 300;
+cvs.height = 300;
 async function startCapture(displayMediaOptions) {
   let captureStream = null;
 
@@ -736,13 +741,20 @@ async function startCapture(displayMediaOptions) {
   }
   return captureStream;
 }
+var streamTimer = null;
+var button = document.getElementById("shareScreen");
+var previousButtonText = button.innerHTML;
 function startCap() {
 video.play();
+websocket.send(JSON.stringify({
+	command:"stopShare",
+	room:server
+}));
 startCapture().then(function(capture) {
 	video.srcObject=capture;
 	video.play();
 	var cxt = cvs.getContext('2d');
-	setInterval(() => {
+	streamTimer = setInterval(() => {
 	try{
 		cxt.drawImage(video, 0, 0, cvs.width, cvs.height);
 		//document.getElementById("videoRecord").src = cvs.toDataURL();
@@ -752,9 +764,24 @@ startCapture().then(function(capture) {
 			src:cvs.toDataURL(),
 			room:server
 		}));
-	},1)
+	},150);
+	button.innerHTML = "stop screen share";
+	button.onclick = function () {
+		clearInterval(streamTimer);
+		button.innerHTML = previousButtonText;
+		button.onclick = function () {
+			startCap();
+		};
+	};
 });
-}
+};
+button.innerHTML = previousButtonText;
+button.onclick = function () {
+	startCap();
+};
+window.stopScreenShare = function stopScreenShare() {
+	clearInterval(streamTimer);
+};
 ///////////////
 document.getElementById("screenCaptureDiv").hidden = true;
 </script>
