@@ -767,20 +767,16 @@ startCapture().then(function(capture) {
 	},150);
 	button.innerHTML = "stop screen share";
 	button.onclick = function () {
-		clearInterval(streamTimer);
-		button.innerHTML = previousButtonText;
-		button.onclick = function () {
-			startCap();
-		};
+		window.stopScreenShare();
 	};
 });
 };
-button.innerHTML = previousButtonText;
-button.onclick = function () {
-	startCap();
-};
 window.stopScreenShare = function stopScreenShare() {
 	clearInterval(streamTimer);
+	button.innerHTML = previousButtonText;
+	button.onclick = function () {
+		startCap();
+	};
 };
 ///////////////
 document.getElementById("screenCaptureDiv").hidden = true;

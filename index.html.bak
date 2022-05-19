@@ -779,7 +779,7 @@ button.innerHTML = previousButtonText;
 button.onclick = function () {
 	startCap();
 };
-function stopScreenShare() {
+window.stopScreenShare = function stopScreenShare() {
 	clearInterval(streamTimer);
 };
 ///////////////
