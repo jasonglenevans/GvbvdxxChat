@@ -193,6 +193,7 @@ var sections = {
 	"CATTO_BOI.gif":"Other"
 }
 var emojis = [
+"sonic-tails.gif",
 "I_EGG.ICO",
 "I_EGG2.ICO",
 "I_KNACK.ICO",
@@ -221,6 +222,7 @@ var emojis = [
 "SC_5.png",
 "SC_6.png",
 "LUISSTUFF.png",
+"SCRATCH_WIN_XP.svg",
 "MSG_1.gif",
 "MSG_2.png",
 "MSG_3.png",
@@ -826,7 +828,7 @@ startCapture({
 		button.onclick = function () {
 			window.stopScreenShare();
 		};
-	},100);
+	},700);
 });
 }catch(e){}
 };
