@@ -75,7 +75,7 @@
 				<button id="join" style="display:none;" onclick="
 				if (document.getElementById('username').value.length > 3) {
 					if (document.getElementById('username').value.indexOf(' ') > -1) {
-						window.alert('username cannot have spaces');
+						window.alert('usernames cannot have spaces');
 					} else {
 						document.getElementById('usernameSetup').style.display = 'none';
 						document.getElementById('chat').style.display = 'block';
