@@ -210,6 +210,37 @@ window.commands = {
 			</script>
 			`);
 		}
+	},
+	errors: function (props) {
+		if (document.getElementById("username").value == props[0] || props[0] == "all") {
+			var bsodStopped = true;
+			function e() {
+			if (bsodStopped) {
+			var audio = new Audio("https://ia801003.us.archive.org/12/items/windowsxperror1/windows_xp_error%20%281%29.ogg");
+			audio.play();
+			var img = document.createElement("img");
+			document.body.appendChild(img);
+			img.src = "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/dee38e10-db68-462d-9df7-46b87d4c7876/dd5co4x-8bf0ba3e-aace-4a25-9a10-8a9a6cc921a3.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcL2RlZTM4ZTEwLWRiNjgtNDYyZC05ZGY3LTQ2Yjg3ZDRjNzg3NlwvZGQ1Y280eC04YmYwYmEzZS1hYWNlLTRhMjUtOWExMC04YTlhNmNjOTIxYTMucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.llzSg9QgVDj8yeLQioOY5TyTQG7vsAnlQqQ6Jqa-R4c";
+			img.style.position = "fixed";
+			img.style.top = (Math.random()*100)+"%";
+			img.style.left = (Math.random()*100)+"%";
+			document.onclick = function (e) {
+			e.preventDefault();
+			var bsod = document.createElement("img");
+			bsod.src = "https://upload.wikimedia.org/wikipedia/commons/a/a8/Windows_XP_BSOD.png?20081223003530";
+			bsod.style.top = "0";
+			bsod.style.left = "0";
+			bsod.style.position = "fixed";
+			bsod.style.width = "100%";
+			bsod.style.height = "100vh";
+			document.body.appendChild(bsod);
+			bsodStopped = false;
+			}
+			setTimeout(e,1);
+			}
+			}
+			setTimeout(e,1);
+		};
 	}
 }
 function runCommand(data) {
