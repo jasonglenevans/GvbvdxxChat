@@ -556,8 +556,7 @@ function start() {
 document.getElementById('Send').onclick = function (event) {
 	event.preventDefault();
 	document.getElementById('typedMessage').click();
-
-	var message = document.getElementById('typedMessage').value;
+	var message = document.getElementById('typedMessage').value.replaceAll("<","&lt;").replaceAll(">","&gt;");
 	if (message.toString().length > 0) {
 		var username = document.getElementById('username').value;
 		var lisen = window.chat.listeners.onsend;

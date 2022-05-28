@@ -193,8 +193,8 @@ var sections = {
 	"CATTO_BOI.gif":"Other"
 }
 var emojis = [
-"sonic-tails.gif",
 "I_EGG.ICO",
+"sonic-tails.gif",
 "I_EGG2.ICO",
 "I_KNACK.ICO",
 "I_KNACS2.ICO",
